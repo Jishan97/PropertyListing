@@ -1,12 +1,12 @@
+import { Container } from "@mui/material";
 import React from "react";
 import LoginComponent from "../../components/logincomponent/LoginComponent";
 
 const LoginPage = () => {
   return (
-    <div>
-      <h1> this is LoginPage</h1>
+    <Container>
       <LoginComponent />
-    </div>
+    </Container>
   );
 };
 

@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
-  Routes,
+  Switch,
   Route,
   Redirect,
 } from "react-router-dom";
@@ -17,6 +17,19 @@ const LoginPage = lazy(() => import("../pages/login/index"));
 const RegisterPage = lazy(() => import("../pages/register/index"));
 const HomePage = lazy(() => import("../pages/home/index"));
 const ListPage = lazy(() => import("../pages/list/index"));
+
+const UserProtectedroutes = ({ ...rest }) => {
+  return localStorage.getItem("role") === "user" ? (
+    <Route {...rest} />
+  ) : (
+    <Redirect
+      to={{
+        pathname: "/login",
+        state: { from: rest.location },
+      }}
+    />
+  );
+};
 
 const routesView = (props) => {
   const routes = [
@@ -41,6 +54,37 @@ const routesView = (props) => {
       footer: () => <></>,
       main: () => <RegisterPage {...props} />,
     },
+    {
+      path: "/",
+      navbar: () => <NavbarComponent />,
+      footer: () => <FooterComponent />,
+      main: ({ subRoutes }) => (
+        <React.Fragment>
+          <Switch>
+            {subRoutes.map((subRoute, index) => (
+              <UserProtectedroutes
+                key={index}
+                path={subRoute.path}
+                exact={subRoute.exact}
+                children={(props) => (
+                  <subRoute.main {...props} />
+                )}
+              />
+            ))}
+          </Switch>
+        </React.Fragment>
+      ),
+      routes: [
+        {
+          path: "/list-property",
+          exact: true,
+          navbar: () => <NavbarComponent />,
+          footer: () => <FooterComponent />,
+          main: (props) => <ListPage {...props} />,
+        },
+      ],
+    },
+  
   ];
 
   return (
@@ -79,36 +123,38 @@ const routesView = (props) => {
       }
     >
       <Router>
-        <Routes>
+        <Switch>
           {routes.map((route, index) => (
             <Route
               key={index}
               path={route.path}
               exact={route.exact}
-              element={<route.navbar {...props} />}
+              children={(props) => <route.navbar {...props} />}
             />
           ))}
-        </Routes>
-        <Routes>
+        </Switch>
+        <Switch>
           {routes.map((route, index) => (
             <Route
               key={index}
               path={route.path}
               exact={route.exact}
-              element={<route.main {...props} />}
+              children={(props) => (
+                <route.main subRoutes={route.routes} {...props} />
+              )}
             />
           ))}
-        </Routes>
-        <Routes>
+        </Switch>
+        <Switch>
           {routes.map((route, index) => (
             <Route
               key={index}
               path={route.path}
               exact={route.exact}
-              element={<route.footer {...props} />}
+              children={(props) => <route.footer {...props} />}
             />
           ))}
-        </Routes>
+        </Switch>
       </Router>
     </Suspense>
   );

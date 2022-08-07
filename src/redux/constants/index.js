@@ -4,8 +4,3 @@ export const UserConstant = {
   EDIT_USER : "EDIT_USER"
 }
 
-export const VehicleConstant = {
-  SET_VEHICLE : "SET_VEHICLE",
-  REMOVE_VEHICLE : "REMOVE_VEHICLE",
-  EDIT_VEHICLE : "EDIT_VEHICLE"
-}
