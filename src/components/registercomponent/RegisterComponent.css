@@ -45,7 +45,7 @@
   border-radius: 4px;
   color: white;
   border: none;
-  cursor: pointer;
+  /* cursor: pointer; */
   width: 240px;
   letter-spacing: 1.5px;
   margin-top: 24px;
